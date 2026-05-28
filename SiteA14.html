@@ -1,0 +1,405 @@
+
+
+<!doctype html>
+<html lang="ru" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>КиноАфиша — фильмы, трейлеры, сеансы</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #11131a;
+      --text: #e6e8ef;
+      --muted: #a6adbb;
+      --accent: #6ea8fe;
+      --accent-2: #8bc34a;
+      --border: #1c2030;
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    html[data-theme="light"] {
+      --bg: #ffffff;
+      --panel: #f6f8fb;
+      --text: #0b0c10;
+      --muted: #4b5563;
+      --accent: #2563eb;
+      --accent-2: #16a34a;
+      --border: #e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    img { max-width: 100%; display: block; }
+    a { color: var(--accent); text-decoration: none; }
+    .container { width: min(1100px, 92%); margin: 0 auto; }
+
+    .header {
+      position: sticky; top: 0; z-index: 10;
+      background: var(--panel); border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(8px);
+    }
+    .header__inner { display: flex; align-items: center; gap: 20px; padding: 14px 0; }
+    .logo { font-weight: 800; color: var(--text); }
+    .nav { margin-left: auto; display: flex; gap: 16px; }
+    .nav a { color: var(--text); opacity: .8; }
+    .nav a:hover { opacity: 1; }
+    .header__actions { display: flex; gap: 10px; }
+
+    .btn {
+      background: var(--accent); color: white; border: none;
+      padding: 10px 16px; border-radius: 10px; cursor: pointer;
+      font-weight: 600; box-shadow: var(--shadow);
+    }
+    .btn--ghost {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border); box-shadow: none;
+    }
+    .btn:disabled { opacity: .6; cursor: not-allowed; }
+
+    .hero { padding: 64px 0; background: linear-gradient(180deg, var(--panel), transparent); }
+    .hero__inner { display: grid; gap: 16px; justify-items: start; }
+    .search { display: flex; gap: 10px; width: 100%; max-width: 560px; }
+    .search input {
+      flex: 1; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--panel); color: var(--text);
+    }
+
+    .catalog { padding: 40px 0; }
+    .filters { display: flex; gap: 10px; margin: 16px 0 22px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+      display: grid; grid-template-rows: 320px auto; transition: transform .2s ease;
+    }
+    .card:hover { transform: translateY(-3px); }
+    .card__media { position: relative; background: #000; }
+    .card__media img { width: 100%; height: 100%; object-fit: cover; }
+    .badge {
+      position: absolute; top: 10px; left: 10px;
+      background: rgba(0,0,0,.6); color: #fff; padding: 4px 8px; border-radius: 8px; font-size: 12px;
+    }
+    .card__body { padding: 12px; display: grid; gap: 8px; }
+    .card__title { font-weight: 700; }
+    .meta { color: var(--muted); font-size: 14px; display: flex; justify-content: space-between; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-size: 12px; padding: 4px 8px; border-radius: 999px; background: #1f2433; color: #c7d2fe; }
+    html[data-theme="light"] .tag { background: #eaeefc; color: #1f2937; }
+    .rating { color: #ffd166; font-weight: 700; }
+    .center { display: flex; justify-content: center; margin-top: 18px; }
+
+    .about { padding: 40px 0; border-top: 1px solid var(--border); }
+    .contact { padding: 40px 0; border-top: 1px solid var(--border); }
+    .contact__form { display: grid; gap: 14px; max-width: 640px; }
+    .form-row { display: grid; gap: 8px; }
+    .form-row--inline { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    input, textarea, select {
+      width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--border);
+      background: var(--panel); color: var(--text);
+    }
+    .checkbox { display: flex; gap: 8px; align-items: center; }
+    .form-note { font-size: 14px; color: var(--muted); }
+
+    .footer { border-top: 1px solid var(--border); padding: 24px 0; background: var(--panel); }
+    .footer__inner { display: flex; justify-content: space-between; align-items: center; }
+    .socials { display: flex; gap: 12px; }
+
+    @media (max-width: 640px) {
+      .nav { display: none; }
+      .card { grid-template-rows: 260px auto; }
+      .form-row--inline { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container header__inner">
+      <a href="#" class="logo">КиноАфиша</a>
+      <nav class="nav">
+        <a href="#catalog">Фильмы</a>
+        <a href="#contact">Контакты</a>
+        <a href="#about">О проекте</a>
+      </nav>
+      <div class="header__actions">
+        <button id="themeToggle" class="btn btn--ghost" aria-label="Переключить тему">🌙</button>
+        <a href="#contact" class="btn">Написать нам</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero__inner">
+        <h1>Откройте для себя лучшие фильмы</h1>
+        <p>Премьеры, рейтинги и трейлеры — всё в одном месте.</p>
+        <form id="searchForm" class="search">
+          <input id="searchInput" type="search" placeholder="Поиск по названию..." aria-label="Поиск по фильмам" />
+          <button class="btn" type="submit">Найти</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="catalog" class="catalog">
+      <div class="container">
+        <h2>Афиша и подборки</h2>
+
+        <div class="filters">
+          <select id="genreFilter" aria-label="Фильтр по жанру">
+            <option value="">Все жанры</option>
+            <option>Боевик</option>
+            <option>Драма</option>
+            <option>Комедия</option>
+            <option>Фантастика</option>
+            <option>Анимация</option>
+          </select>
+          <select id="sortSelect" aria-label="Сортировать по">
+            <option value="popular">Популярности</option>
+            <option value="rating">Рейтингу</option>
+            <option value="year">Году</option>
+          </select>
+        </div>
+
+        <div id="grid" class="grid"></div>
+
+        <div class="center">
+          <button id="loadMore" class="btn btn--ghost">Показать ещё</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="container about__inner">
+        <h2>О проекте</h2>
+        <p>КиноАфиша — учебный проект на HTML, CSS и JavaScript. Здесь реализованы карточки фильмов, фильтры, поиск, переключение темы и форма обратной связи.</p>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2>Свяжитесь с нами</h2>
+        <form id="contactForm" novalidate class="contact__form">
+          <div class="form-row">
+            <label>Имя
+              <input name="name" type="text" required minlength="2" placeholder="Ваше имя" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Email
+              <input name="email" type="email" required placeholder="you@example.com" />
+            </label>
+          </div>
+          <div class="form-row">
+            <label>Сообщение
+              <textarea name="message" required minlength="10" placeholder="Ваш вопрос или отзыв"></textarea>
+            </label>
+          </div>
+          <div class="form-row form-row--inline">
+            <label class="checkbox">
+              <input type="checkbox" name="agree" required />
+              <span>Согласен(на) с обработкой данных</span>
+            </label>
+            <button class="btn" type="submit">Отправить</button>
+          </div>
+          <p id="formNote" class="form-note" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>© 2026 КиноАфиша. Все права защищены.</p>
+      <div class="socials">
+        <a href="#" aria-label="VK">VK</a>
+        <a href="#" aria-label="Telegram">TG</a>
+        <a href="#" aria-label="YouTube">YT</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Демо-данные фильмов
+    const MOVIES = [
+      { id: 1, title: "Дюна: Часть вторая", year: 2024, rating: 8.6, genres: ["Фантастика", "Драма"], poster: "https://image.tmdb.org/t/p/w500/1.jpg" },
+      { id: 2, title: "Оппенгеймер", year: 2023, rating: 8.8, genres: ["Драма"], poster: "https://image.tmdb.org/t/p/w500/2.jpg" },
+      { id: 3, title: "Барби", year: 2023, rating: 7.2, genres: ["Комедия"], poster: "https://image.tmdb.org/t/p/w500/3.jpg" },
+      { id: 4, title: "Человек-паук: Паутина вселенных", year: 2023, rating: 8.5, genres: ["Анимация","Фантастика"], poster: "https://image.tmdb.org/t/p/w500/4.jpg" },
+      { id: 5, title: "Бедные-несчастные", year: 2023, rating: 8.1, genres: ["Драма","Комедия"], poster: "https://image.tmdb.org/t/p/w500/5.jpg" },
+      { id: 6, title: "Джон Уик 4", year: 2023, rating: 7.9, genres: ["Боевик"], poster: "https://image.tmdb.org/t/p/w500/6.jpg" },
+      { id: 7, title: "Гран Туризмо", year: 2023, rating: 7.4, genres: ["Боевик","Драма"], poster: "https://image.tmdb.org/t/p/w500/7.jpg" },
+      { id: 8, title: "Марио в кино", year: 2023, rating: 7.5, genres: ["Анимация","Комедия"], poster: "https://image.tmdb.org/t/p/w500/8.jpg" },
+      { id: 9, title: "Аватар: Путь воды", year: 2022, rating: 7.7, genres: ["Фантастика"], poster: "https://image.tmdb.org/t/p/w500/9.jpg" },
+      { id: 10, title: "Бэтмен", year: 2022, rating: 7.9, genres: ["Боевик","Драма"], poster: "https://image.tmdb.org/t/p/w500/10.jpg" },
+    ];
+    // Для офлайн-демо используем заглушки картинок:
+    function placeholder(id){ return `https://picsum.photos/seed/movie${id}/600/900`; }
+    MOVIES.forEach(m => m.poster = placeholder(m.id));
+
+    // Состояние
+    let page = 1;
+    const PAGE_SIZE = 6;
+    let currentTheme = localStorage.getItem("theme") || "light";
+
+    const grid = document.getElementById("grid");
+    const loadMoreBtn = document.getElementById("loadMore");
+    const genreFilter = document.getElementById("genreFilter");
+    const sortSelect = document.getElementById("sortSelect");
+    const searchForm = document.getElementById("searchForm");
+    const searchInput = document.getElementById("searchInput");
+
+    // Тема
+    document.documentElement.setAttribute("data-theme", currentTheme);
+    updateThemeIcon();
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      currentTheme = currentTheme === "light" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", currentTheme);
+      localStorage.setItem("theme", currentTheme);
+      updateThemeIcon();
+    });
+    function updateThemeIcon(){
+      const b = document.getElementById("themeToggle");
+      b.textContent = document.documentElement.getAttribute("data-theme") === "dark" ? "☀️" : "🌙";
+    }
+
+    // Рендер карточек
+    function renderCards(reset=false) {
+      const query = searchInput.value.trim().toLowerCase();
+      const genre = genreFilter.value;
+      const sortBy = sortSelect.value;
+
+      let data = MOVIES.filter(m =>
+        (!genre || m.genres.includes(genre)) &&
+        (!query || m.title.toLowerCase().includes(query))
+      );
+
+      if (sortBy === "rating") data.sort((a,b)=> b.rating - a.rating);
+      else if (sortBy === "year") data.sort((a,b)=> b.year - a.year);
+      // popular — исходный порядок
+
+      const total = data.length;
+      const end = Math.min(page * PAGE_SIZE, total);
+      const pageData = data.slice(0, end);
+
+      if (reset) grid.innerHTML = "";
+      for (const m of pageData.slice(grid.childElementCount)) {
+        grid.appendChild(cardEl(m));
+      }
+      loadMoreBtn.style.display = end < total ? "inline-flex" : "none";
+
+      // Сохранение позиции кнопки и плавный скролл при догрузке (необязательно)
+      // if (!reset) grid.lastElementChild?.scrollIntoView({behavior:"smooth", block:"end"});
+    }
+
+    function cardEl(m) {
+      const el = document.createElement("article");
+      el.className = "card";
+      el.innerHTML = `
+        <div class="card__media">
+          <img src="${m.poster}" alt="Постер: ${m.title}">
+          <span class="badge">${m.year}</span>
+        </div>
+        <div class="card__body">
+          <div class="card__title">${m.title}</div>
+          <div class="meta">
+            <span class="rating">★ ${m.rating}</span>
+            <span>${m.genres[0]}</span>
+          </div>
+          <div class="tags">${m.genres.map(g=>`<span class="tag">${g}</span>`).join("")}</div>
+          <button class="btn btn--ghost" data-id="${m.id}">Трейлер</button>
+        </div>
+      `;
+      // Модалка-трейлер (заглушка)
+      el.querySelector("button").addEventListener("click", () => {
+        openModal(`<h3>${m.title}</h3><p>Трейлер временно недоступен. Это демо-модальное окно.</p>`);
+      });
+      return el;
+    }
+
+    // Кнопка "Показать ещё"
+    loadMoreBtn.addEventListener("click", () => {
+      page++;
+      renderCards();
+    });
+
+    // Фильтры, поиск, сортировка
+    function resetAndRender(){
+      page = 1;
+      renderCards(true);
+    }
+    genreFilter.addEventListener("change", resetAndRender);
+    sortSelect.addEventListener("change", resetAndRender);
+    searchForm.addEventListener("submit", (e)=>{
+      e.preventDefault();
+      resetAndRender();
+    });
+
+    // Модальное окно
+    function openModal(html){
+      let modal = document.getElementById("modal");
+      if (!modal) {
+        modal = document.createElement("div");
+        modal.id = "modal";
+        Object.assign(modal.style, {
+          position: "fixed", inset: "0", background: "rgba(0,0,0,.6)",
+          display: "grid", placeItems: "center", zIndex: "100"
+        });
+        modal.innerHTML = `<div id="modalBox" style="
+          background: var(--panel); color: var(--text); border:1px solid var(--border);
+          border-radius:16px; padding:20px; max-width: min(560px, 92%);">
+          <div id="modalContent"></div>
+          <div style="margin-top:12px; display:flex; justify-content:flex-end;">
+            <button id="closeModal" class="btn btn--ghost">Закрыть</button>
+          </div>
+        </div>`;
+        document.body.appendChild(modal);
+        modal.addEventListener("click", (e)=> {
+          if (e.target.id === "modal" || e.target.id === "closeModal") modal.remove();
+        });
+      }
+      modal.querySelector("#modalContent").innerHTML = html;
+    }
+
+    // Форма обратной связи: валидация + console.log
+    const contactForm = document.getElementById("contactForm");
+    const formNote = document.getElementById("formNote");
+
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(contactForm);
+      const data = Object.fromEntries(fd.entries());
+
+      // простая валидация
+      const errors = [];
+      if (!data.name || data.name.trim().length < 2) errors.push("Имя слишком короткое");
+      if (!data.email || !/^\S+@\S+\.\S+$/.test(data.email)) errors.push("Некорректный email");
+      if (!data.message || data.message.trim().length < 10) errors.push("Сообщение слишком короткое");
+      if (!fd.get("agree")) errors.push("Подтвердите согласие");
+
+      if (errors.length) {
+        formNote.textContent = "Исправьте ошибки: " + errors.join("; ");
+        formNote.style.color = "#ef4444";
+        return;
+      }
+
+      console.log("Form data:", data);
+      formNote.textContent = "Сообщение отправлено! Проверьте консоль.";
+      formNote.style.color = "var(--accent-2)";
+      contactForm.reset();
+    });
+
+    // Стартовый рендер
+    renderCards(true);
+  </script>
+</body>
+</html>
